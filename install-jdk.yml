@@ -1,0 +1,15 @@
+- hosts: "{{ nodes }}"
+  gather_facts: no
+  vars:
+     nothing: no
+  tasks:
+  - name: Install JDK
+    shell: yum install -y java-1.8.0
+    register: result
+    become: true
+    register: result
+    changed_when: '"Nothing to do" not in result.stdout'
+   # when: result.find("Nothing") == 1
+  - debug:
+     msg: "Nothing"
+     when: result.find("Nothing") == 1
