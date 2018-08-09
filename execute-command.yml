@@ -1,0 +1,25 @@
+---
+- hosts: "{{ nodes }}"
+  gather_facts: no
+  serial: 5
+
+  vars:
+     nothing: no
+
+  tasks:
+  - name: Checking that the daemon is up and running
+    shell: < Some Command >
+    register: d_result
+    changed_when: false
+    ignore_errors: yes
+ 
+  - name: killing daemon if it is not running
+    shell: < Some Command >
+    when: '"daemon did not respond or not running!" in d_result.stdout'
+    ignore_errors: yes
+
+  - name: Executing command
+    shell: < Some command >
+    register: result
+    changed_when: '"" in result.stdout'
+    ignore_errors: yes
