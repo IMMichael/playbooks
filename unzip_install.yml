@@ -1,0 +1,15 @@
+- hosts: "{{ nodes }}"
+  gather_facts: no
+
+  tasks:
+  - name: Ansible copy file to remote server
+    copy:
+      src: "{{ src1 }}"
+      dest: "{{ dest1 }}"
+      backup: yes 
+
+  - name: Extract File
+    shell: tar -xzvf <file_name> {{ src1 | basename }}
+
+  - name: Installation
+    shell: ./UnixInstallScript
