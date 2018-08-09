@@ -1,0 +1,31 @@
+---
+- hosts: "{{ nodes }}"
+  serial: 5
+
+  vars:
+     nothing: no
+
+  tasks:
+    - name: Ensure that free space on the tested volume is greater than 19%
+      assert:
+        that:
+           - item.size_available > item.size_total|float * 0.19
+        msg: Disk space has reached 20% threshold
+      ignore_errors: yes
+      register: disk_free
+
+      vars:
+      when: item.mount == mountname
+      with_items: "{{ ansible_mounts }}"
+
+    - name: Clear catalina.out on server, if needed
+      shell: echo>/var/tomcat7_instances/instance01/logs/catalina.out
+      when: disk_free|failed
+    
+    - name: Clear  error logs
+      shell: find / -name error.log.* -mtime +15 -print0| xargs -0 rm
+      when: disk_free|failed
+
+    - name: Restart Client
+      shell: < some command >
+      when: disk_free|failed
